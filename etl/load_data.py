@@ -22,23 +22,6 @@ def load_to_postgres(pg_conn, df):
 
     df.insert(0, "load_batch_id", str(uuid.uuid4()))
 
-    # rename columns to match table
-    # df.columns = [
-    #     "load_batch_id",
-    #     "order_number",
-    #     "material_number",
-    #     "material_description",
-    #     "work_center",
-    #     "posting_date",
-    #     "day_yield",
-    #     "day_scrap",
-    #     "gold_issued_261",
-    #     "gold_issued_reversal_262",
-    #     "gold_byproduct_531",
-    #     "gold_byproduct_reversal_532",
-    #     "entries"
-    # ]
-
     buffer = io.StringIO()
     df.to_csv(buffer, index=False, header=False)
     buffer.seek(0)
@@ -47,17 +30,17 @@ def load_to_postgres(pg_conn, df):
     COPY raw.gold_movement (
         load_batch_id,
         order_number,
-        material_number,
-        material_description,
+        part_number,
+        part_name,
         work_center,
         posting_date,
-        day_yield,
-        day_scrap,
-        gold_issued_261,
-        gold_issued_reversal_262,
+        yield,
+        scrap,
+        gold_usage,
+        gold_backflush,
         gold_byproduct_531,
-        gold_byproduct_reversal_532,
-        entries
+        gold_reversal_532,
+        movement_entry_count
     )
     FROM STDIN WITH CSV
     """
